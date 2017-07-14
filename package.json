@@ -4,11 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm-run-all clean build:riot build:browserify",
+    "build:riot": "riot -m src/tags src/tags/index.js",
+    "build:browserify": "browserify src/index.js > public/bundle.js --debug",
+    "clean": "npm-run-all -p clean:*",
+    "clean:bundle": "rimraf public/bundle.js",
+    "clean:tags": "rimraf src/tags/**/index.js",
+    "prestart": "npm run build",
+    "start": "npm-run-all -p watch start:dev",
+    "start:dev": "nodemon app.js",
+    "start:production": "cross-env NODE_ENV=production node app.js",
+    "watch": "chokidar \"src/**/*\" -i \"src/tags/**/index.js\" -c \"npm run build\""
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "kazunori.kimura.js@gmail.com",
+  "license": "MIT",
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",
@@ -17,13 +27,38 @@
     "browser-sync": "^2.18.12",
     "browserify": "^14.4.0",
     "chokidar-cli": "^1.2.0",
+    "cross-env": "^5.0.1",
+    "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
     "rimraf": "^2.6.1",
     "riot": "^3.6.1",
     "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "redis": "^2.7.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kazunori-Kimura/redis-todo-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kazunori-Kimura/redis-todo-app/issues"
+  },
+  "homepage": "https://github.com/Kazunori-Kimura/redis-todo-app#readme",
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015",
+            "es2016"
+          ]
+        }
+      ]
+    ]
   }
 }
